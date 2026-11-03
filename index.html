@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>MYFINANCE — Organization Finance</title>
-  <link rel="icon" type="image/png" sizes="512x512" href="./favicon-aresta%20(1).png">
+ <link rel="icon" type="image/png" sizes="512x512" href="./favicon-aresta%20(1).png">
 <link rel="apple-touch-icon" href="./favicon-aresta%20(1).png">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
@@ -51,8 +51,10 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
   <section class="page active" id="page-dashboard">
    <div class="grid">
     <div class="card"><span class="stat-icon">💳</span><div class="stat-label">Saldo saat ini</div><div class="stat-value" id="balance">Rp0</div><div class="stat-foot">Akumulasi seluruh transaksi</div></div>
-    <div class="card"><span class="stat-icon">↗️</span><div class="stat-label">Total pemasukan</div><div class="stat-value green" id="income">Rp0</div><div class="stat-foot">Pemasukan tercatat</div></div>
-    <div class="card"><span class="stat-icon">↘️</span><div class="stat-label">Total pengeluaran</div><div class="stat-value red" id="expense">Rp0</div><div class="stat-foot">Pengeluaran tercatat</div></div>
+    <div class="card"><span class="stat-icon">🤝</span><div class="stat-label">Pemasukan Sponsor</div><div class="stat-value green" id="incomeSponsor">Rp0</div><div class="stat-foot">Dana sponsor masuk</div></div>
+    <div class="card"><span class="stat-icon">🧮</span><div class="stat-label">Pemasukan Anggaran</div><div class="stat-value green" id="incomeBudget">Rp0</div><div class="stat-foot">Pemasukan langsung anggaran</div></div>
+    <div class="card"><span class="stat-icon">↘️</span><div class="stat-label">Pengeluaran Sponsor</div><div class="stat-value red" id="expenseSponsor">Rp0</div><div class="stat-foot">Pengeluaran dari dana sponsor</div></div>
+    <div class="card"><span class="stat-icon">📤</span><div class="stat-label">Pengeluaran Anggaran</div><div class="stat-value red" id="expenseBudget">Rp0</div><div class="stat-foot">Pengeluaran dari dana anggaran</div></div>
     <div class="card"><span class="stat-icon">🧾</span><div class="stat-label">Jumlah transaksi</div><div class="stat-value" id="count">0</div><div class="stat-foot">Seluruh transaksi</div></div>
    </div>
    <div class="section-grid">
@@ -68,7 +70,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
     <div class="card"><div class="stat-label">Saldo dana sponsor</div><div class="stat-value" id="sponsorBalance">Rp0</div><div class="stat-foot">Dana sponsor yang belum dialokasikan</div></div>
    </div>
    <div class="fund-note">Catat seluruh pemasukan sponsor di sini. Jika dana akan digunakan untuk kegiatan, pindahkan melalui tombol alokasi. Pemindahan bukan pemasukan baru.</div>
-   <div class="card" style="margin-top:16px"><div class="card-head"><h3>Riwayat pemasukan sponsor</h3><button class="btn" id="sponsorAddBtn">＋ Pemasukan Sponsor</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th></tr></thead><tbody id="sponsorRows"></tbody></table></div></div>
+   <div class="card" style="margin-top:16px"><div class="card-head"><h3>Transaksi dana sponsor</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" id="sponsorAddBtn">＋ Pemasukan</button><button class="btn" id="sponsorExpenseBtn">－ Pengeluaran</button></div></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jenis</th><th>Jumlah</th></tr></thead><tbody id="sponsorRows"></tbody></table></div></div>
    <div class="card" style="margin-top:16px"><div class="card-head"><h3>Riwayat alokasi dana</h3><button class="btn secondary" id="transferBtn">↗ Pindahkan Dana</button></div><div id="transferRows"></div></div>
   </section>
   <section class="page" id="page-fundbudget">
@@ -78,7 +80,7 @@ button,input,select,textarea{font:inherit}button{cursor:pointer}.hidden{display:
     <div class="card"><div class="stat-label">Sisa dana anggaran</div><div class="stat-value green" id="budgetFundBalance">Rp0</div><div class="stat-foot">Dana yang masih tersedia</div></div>
    </div>
    <div class="fund-note">Tambahkan dana langsung melalui tombol “Tambah Dana”, atau pindahkan dana dari halaman Sponsor. Semua pemasukan dan pengeluaran anggaran tercatat terpisah.</div>
-   <div class="card" style="margin-top:16px"><div class="card-head"><h3>Pengeluaran dari dana anggaran</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" id="budgetIncomeBtn">＋ Tambah Dana</button><button class="btn" id="budgetExpenseBtn">＋ Pengeluaran</button></div></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jumlah</th></tr></thead><tbody id="budgetExpenseRows"></tbody></table></div></div>
+   <div class="card" style="margin-top:16px"><div class="card-head"><h3>Transaksi dana anggaran</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn secondary" id="budgetIncomeBtn">＋ Pemasukan</button><button class="btn" id="budgetExpenseBtn">－ Pengeluaran</button></div></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jenis</th><th>Jumlah</th></tr></thead><tbody id="budgetExpenseRows"></tbody></table></div></div>
    <div class="card" style="margin-top:16px"><div class="card-head"><h3>Riwayat dana masuk</h3></div><div id="budgetTransferRows"></div></div>
   </section>
   <section class="page" id="page-transactions"><div class="card"><div class="card-head"><h3>Semua transaksi</h3><button class="btn" id="addBtn2">＋ Tambah</button></div><div class="table-wrap"><table><thead><tr><th>Tanggal</th><th>Keterangan</th><th>Kategori</th><th>Jenis</th><th>Jumlah</th><th>Aksi</th></tr></thead><tbody id="allRows"></tbody></table></div></div></section>
@@ -225,7 +227,8 @@ $('orgForm').onsubmit = async e => {
 };
 async function refreshData(){if(!orgId)return;const [t,b,f]=await Promise.all([sb.from('transactions').select('*').eq('organization_id',orgId).order('transaction_date',{ascending:false}),sb.from('budgets').select('*').eq('organization_id',orgId).order('month',{ascending:false}),sb.from('fund_transfers').select('*').eq('organization_id',orgId).order('transfer_date',{ascending:false})]);if(t.error||b.error||f.error){toast(t.error?.message||b.error?.message||f.error?.message);return}transactions=t.data||[];budgets=b.data||[];transfers=f.data||[];render()}
 function render(){const inc=transactions.filter(x=>x.type==='income').reduce((a,x)=>a+Number(x.amount),0),out=transactions.filter(x=>x.type==='expense').reduce((a,x)=>a+Number(x.amount),0),balance=inc-out;
-$('balance').textContent=rupiah(balance);$('income').textContent=rupiah(inc);$('expense').textContent=rupiah(out);$('count').textContent=transactions.length;
+const sum=(type,fund)=>transactions.filter(x=>x.type===type&&(x.fund_type||(type==='income'?'sponsor':'budget'))===fund).reduce((a,x)=>a+Number(x.amount),0);
+$('balance').textContent=rupiah(balance);$('incomeSponsor').textContent=rupiah(sum('income','sponsor'));$('incomeBudget').textContent=rupiah(sum('income','budget'));$('expenseSponsor').textContent=rupiah(sum('expense','sponsor'));$('expenseBudget').textContent=rupiah(sum('expense','budget'));$('count').textContent=transactions.length;
 $('reportIncome').textContent=rupiah(inc);$('reportExpense').textContent=rupiah(out);$('reportNet').textContent=rupiah(balance);$('reportCount').textContent=transactions.length;
 
 const rows = (items, actions = false) =>
@@ -269,19 +272,19 @@ $('recentRows').innerHTML=rows(transactions.slice(0,5));$('allRows').innerHTML=r
 renderBudgets();renderChart();renderFundPages()}
 function renderFundPages(){
  const sponsorIn=transactions.filter(t=>t.type==='income'&&(t.fund_type||'sponsor')==='sponsor').reduce((a,t)=>a+Number(t.amount),0);
+ const sponsorOut=transactions.filter(t=>t.type==='expense'&&(t.fund_type||'budget')==='sponsor').reduce((a,t)=>a+Number(t.amount),0);
  const budgetOut=transactions.filter(t=>t.type==='expense'&&(t.fund_type||'budget')==='budget').reduce((a,t)=>a+Number(t.amount),0);
  const allocated=transfers.reduce((a,t)=>a+Number(t.amount),0);
  const directBudgetIn=transactions.filter(t=>t.type==='income'&&t.fund_type==='budget').reduce((a,t)=>a+Number(t.amount),0);
- const budgetIn=allocated+directBudgetIn,budgetBalance=budgetIn-budgetOut,sponsorBalance=sponsorIn-allocated;
+ const budgetIn=allocated+directBudgetIn,budgetBalance=budgetIn-budgetOut,sponsorBalance=sponsorIn-allocated-sponsorOut;
  $('sponsorIncome').textContent=rupiah(sponsorIn);$('sponsorAllocated').textContent=rupiah(allocated);$('sponsorBalance').textContent=rupiah(sponsorBalance);
  $('budgetFundIn').textContent=rupiah(budgetIn);$('budgetFundOut').textContent=rupiah(budgetOut);$('budgetFundBalance').textContent=rupiah(budgetBalance);
- const sponsorRows=transactions.filter(t=>t.type==='income'&&(t.fund_type||'sponsor')==='sponsor');
- const expenseRows=transactions.filter(t=>t.type==='expense'&&(t.fund_type||'budget')==='budget');
- const directBudgetRows=transactions.filter(t=>t.type==='income'&&t.fund_type==='budget');
- const simpleRows=(arr)=>arr.length?arr.map(t=>`<tr><td>${escapeHtml(t.transaction_date)}</td><td>${escapeHtml(t.description)}</td><td>${escapeHtml(t.category)}</td><td class="${t.type==='income'?'green':'red'}">${rupiah(t.amount)}</td></tr>`).join(''):'<tr><td colspan="4" class="empty">Belum ada data.</td></tr>';
- $('sponsorRows').innerHTML=simpleRows(sponsorRows);$('budgetExpenseRows').innerHTML=simpleRows(expenseRows);
+ const sponsorRows=transactions.filter(t=>(t.fund_type||(t.type==='income'?'sponsor':'budget'))==='sponsor');
+ const budgetRows=transactions.filter(t=>(t.fund_type||(t.type==='income'?'sponsor':'budget'))==='budget');
+ const simpleRows=(arr)=>arr.length?arr.map(t=>`<tr><td>${escapeHtml(t.transaction_date)}</td><td>${escapeHtml(t.description)}</td><td>${escapeHtml(t.category)}</td><td><span class="pill ${t.type==='expense'?'out':''}">${t.type==='income'?'Masuk':'Keluar'}</span></td><td class="${t.type==='income'?'green':'red'}">${t.type==='income'?'+':'−'} ${rupiah(t.amount)}</td></tr>`).join(''):'<tr><td colspan="5" class="empty">Belum ada transaksi.</td></tr>';
+ $('sponsorRows').innerHTML=simpleRows(sponsorRows);$('budgetExpenseRows').innerHTML=simpleRows(budgetRows);
  const transferItems=transfers.map(t=>`<div class="transfer-row"><div><strong>${rupiah(t.amount)}</strong><div class="small muted">${escapeHtml(t.transfer_date)} · ${escapeHtml(t.description||'Alokasi dana sponsor')}</div></div><span class="fund-tag">Dari Sponsor</span></div>`);
- const directItems=directBudgetRows.map(t=>`<div class="transfer-row"><div><strong>${rupiah(t.amount)}</strong><div class="small muted">${escapeHtml(t.transaction_date)} · ${escapeHtml(t.description)}</div></div><span class="fund-tag budget">Dana langsung</span></div>`);
+ const directItems=transactions.filter(t=>t.type==='income'&&t.fund_type==='budget').map(t=>`<div class="transfer-row"><div><strong>${rupiah(t.amount)}</strong><div class="small muted">${escapeHtml(t.transaction_date)} · ${escapeHtml(t.description)}</div></div><span class="fund-tag budget">Dana langsung</span></div>`);
  const transferHtml=[...transferItems,...directItems].join('')||'<div class="empty">Belum ada dana masuk.</div>';
  $('transferRows').innerHTML=transferItems.join('')||'<div class="empty">Belum ada pemindahan dana.</div>';$('budgetTransferRows').innerHTML=transferHtml;
  $('transferAvailable').textContent='Saldo sponsor tersedia: '+rupiah(sponsorBalance);
@@ -296,7 +299,7 @@ $('menuBtn').onclick=()=>$('sidebar').classList.toggle('open');$('refreshBtn').o
 function openTransaction(x=null){editingId=x?.id||null;$('modalTitle').textContent=x?'Edit transaksi':'Tambah transaksi';$('type').value=x?.type||'income';$('fundType').value=x?.fund_type||(x?.type==='expense'?'budget':'sponsor');$('amount').value=x?.amount||'';$('category').value=x?.category||'Donasi';$('date').value=x?.transaction_date||dateNow();$('description').value=x?.description||'';
 $('receiptFile').value = '';$('formError').textContent='';$('modal').classList.remove('hidden')}
 $('type').onchange=()=>{$('fundType').value=$('type').value==='income'?'sponsor':'budget'};
-$('addBtn').onclick=$('addBtn2').onclick=()=>openTransaction();$('sponsorAddBtn').onclick=()=>{openTransaction();$('type').value='income';$('fundType').value='sponsor';$('category').value='Sponsor'};$('budgetIncomeBtn').onclick=()=>{openTransaction();$('type').value='income';$('fundType').value='budget';$('category').value='Operasional';$('modalTitle').textContent='Tambah Dana Anggaran'};$('budgetExpenseBtn').onclick=()=>{openTransaction();$('type').value='expense';$('fundType').value='budget'};$('closeModal').onclick=()=>$('modal').classList.add('hidden');
+$('addBtn').onclick=$('addBtn2').onclick=()=>openTransaction();$('sponsorAddBtn').onclick=()=>{openTransaction();$('type').value='income';$('fundType').value='sponsor';$('category').value='Sponsor'};$('sponsorExpenseBtn').onclick=()=>{openTransaction();$('type').value='expense';$('fundType').value='sponsor';$('category').value='Operasional';$('modalTitle').textContent='Pengeluaran Dana Sponsor'};$('budgetIncomeBtn').onclick=()=>{openTransaction();$('type').value='income';$('fundType').value='budget';$('category').value='Operasional';$('modalTitle').textContent='Tambah Dana Anggaran'};$('budgetExpenseBtn').onclick=()=>{openTransaction();$('type').value='expense';$('fundType').value='budget'};$('closeModal').onclick=()=>$('modal').classList.add('hidden');
 window.editTransaction=id=>openTransaction(transactions.find(x=>x.id===id));
 window.deleteTransaction=async id=>{if(!confirm('Hapus transaksi ini?'))return;const {error}=await sb.from('transactions').delete().eq('id',id).eq('organization_id',orgId);if(error)toast(error.message);else{toast('Transaksi dihapus');await refreshData()}};
 
